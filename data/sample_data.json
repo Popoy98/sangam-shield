@@ -1,0 +1,36 @@
+{
+  "_note": "Sample data for Sangam Shield. Zones, areas and base densities match index.html. Densities are people per m2. Areas are illustrative, not surveyed.",
+  "zones": [
+    {"id": "gate",   "name": "Main Gate",     "area_m2": 900,  "base_density": 2.2},
+    {"id": "park",   "name": "Parking",       "area_m2": 2500, "base_density": 1.2},
+    {"id": "temple", "name": "Temple Lane",   "area_m2": 700,  "base_density": 3.0},
+    {"id": "market", "name": "Market Chowk",  "area_m2": 1100, "base_density": 2.6},
+    {"id": "bridge", "name": "Bridge",        "area_m2": 600,  "base_density": 3.0},
+    {"id": "akh",    "name": "Akhada Camp",   "area_m2": 1200, "base_density": 1.6},
+    {"id": "ghatA",  "name": "Ghat A",        "area_m2": 1500, "base_density": 3.7},
+    {"id": "ghatB",  "name": "Ghat B",        "area_m2": 1400, "base_density": 3.0},
+    {"id": "med",    "name": "Medical Camp",  "area_m2": 400,  "base_density": 0.7}
+  ],
+  "paths": [
+    ["gate","temple"],["gate","park"],["park","market"],["temple","market"],
+    ["temple","bridge"],["market","bridge"],["temple","akh"],["akh","ghatA"],
+    ["bridge","ghatA"],["bridge","ghatB"],["market","med"],["med","ghatB"],
+    ["bridge","med"],["ghatA","ghatB"]
+  ],
+  "thresholds_people_per_m2": {"safe_below": 2.5, "danger_from": 4.0},
+  "scenarios": {
+    "normal": {"density_multiplier": 0.75},
+    "peak":   {"density_multiplier": 1.2},
+    "surge":  {"density_multiplier": 1.2, "extra_density": {"bridge": 2.8}}
+  },
+  "sample_sensor_readings_phase2": [
+    {"zone_id": "bridge", "timestamp": "2027-01-15T05:42:10+05:30", "count": 2100, "source": "volunteer_counter"},
+    {"zone_id": "ghatA",  "timestamp": "2027-01-15T05:42:10+05:30", "count": 6200, "source": "cctv_counter"},
+    {"zone_id": "gate",   "timestamp": "2027-01-15T05:42:10+05:30", "count": 1980, "source": "volunteer_counter"}
+  ],
+  "worked_examples": [
+    {"zone_id": "bridge", "count": 2100, "area_m2": 600,  "density": 3.5, "status": "busy"},
+    {"zone_id": "ghatA",  "count": 6200, "area_m2": 1500, "density": 4.13, "status": "danger"},
+    {"zone_id": "gate",   "count": 1980, "area_m2": 900,  "density": 2.2, "status": "safe"}
+  ]
+}

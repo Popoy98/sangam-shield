@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sangam Shield – Kumbh Mela Crowd Command</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Mukta:wght@400;600;700&display=swap">
+<style>
+:root{--bg:#090F12;--panel:#10191E;--panel2:#16232A;--ink:#EAF1F3;--mute:#8FA5AD;--line:#21363E;--brass:#E0B35A;--ok:#3DDC97;--warn:#FFB020;--bad:#FF4D5E;color-scheme:dark;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Mukta',system-ui,sans-serif;font-size:16px;line-height:1.45;font-variant-numeric:tabular-nums}
+.wrap{max-width:1240px;margin:0 auto;padding:14px}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.brand{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:28px;color:var(--brass);line-height:1.1}
+.logo small{display:block;font-family:'Mukta',sans-serif;font-size:13px;color:var(--mute);font-weight:400}
+.pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:5px 14px;font-weight:700}
+.pill i{width:10px;height:10px;border-radius:50%;background:var(--ok)}
+.clk{color:var(--mute);font-size:14px}
+.ctl{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--panel)}
+.seg button{border:0;background:transparent;color:var(--mute);padding:8px 14px;font:inherit;font-weight:600;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--brass);color:#1b1405}
+.seg button[data-s="surge"][aria-pressed="true"]{background:var(--bad);color:#fff}
+button:focus-visible,select:focus-visible,.z:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
+.how{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--brass);border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:15px}
+.badge{background:var(--brass);color:#1b1405;border-radius:6px;padding:1px 8px;font-weight:700;margin-right:8px;font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
+@media(max-width:760px){.stats{grid-template-columns:1fr 1fr}}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 14px}
+.stat b{display:block;font-family:'Fraunces',Georgia,serif;font-size:24px;font-weight:600;line-height:1.25}
+.stat span{color:var(--mute);font-size:13px}
+.grid{display:grid;grid-template-columns:1.6fr 1fr;gap:14px}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+svg.map{display:block;width:100%;height:auto;background:#0B1418}
+.nm{fill:var(--ink);font-size:12.5px;font-weight:600;text-anchor:middle;paint-order:stroke;stroke:#0B1418;stroke-width:4px;pointer-events:none}
+.dn{fill:var(--ink);font-size:11px;font-weight:700;text-anchor:middle;pointer-events:none}
+.dv{fill:var(--brass);font-size:11px;font-weight:700;text-anchor:middle;paint-order:stroke;stroke:#0B1418;stroke-width:3px;pointer-events:none}
+.z{cursor:pointer}
+.legend{display:flex;gap:16px;flex-wrap:wrap;padding:10px 14px;color:var(--mute);font-size:13px;border-top:1px solid var(--line)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+.tabs{display:flex;border-bottom:1px solid var(--line)}
+.tabs button{flex:1;border:0;background:transparent;color:var(--mute);padding:12px 4px;font:inherit;font-weight:700;cursor:pointer;border-bottom:3px solid transparent}
+.tabs button[aria-selected="true"]{color:var(--brass);border-bottom-color:var(--brass)}
+.body{padding:14px;min-height:420px}
+label{display:block;color:var(--mute);font-size:13px;margin:10px 0 4px}
+select{width:100%;padding:10px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);font:inherit}
+.btn{border:0;border-radius:10px;padding:10px 12px;font:inherit;font-weight:700;cursor:pointer;background:var(--brass);color:#1b1405}
+.btn.alt{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.sos{background:var(--bad);color:#fff}
+.full{width:100%;margin-top:12px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.out{margin-top:14px;padding:12px;background:var(--panel2);border-radius:10px;border-left:4px solid var(--brass)}
+.out.bad{border-left-color:var(--bad)}
+ul{margin:6px 0 0;padding-left:18px}
+.al{list-style:none;padding:0;margin:0}
+.al li{padding:10px 0;border-bottom:1px solid var(--line)}
+.al .tm{color:var(--mute);font-size:12px;display:block}
+.al .bad{color:var(--bad);font-weight:700}.al .pred{color:var(--warn);font-weight:700}.al .sos,.al .act{color:var(--brass);font-weight:700}
+.al .btn{margin-top:6px;padding:5px 12px;font-size:14px}
+.empty{color:var(--mute)}
+.zh{font-family:'Fraunces',Georgia,serif;font-weight:600;font-size:22px;margin:0 0 4px}
+.zbig{display:flex;align-items:baseline;gap:8px}
+.zbig b{font-family:'Fraunces',Georgia,serif;font-size:44px;font-weight:600;line-height:1.1}
+.zbig span{color:var(--mute)}.zbig em{font-style:normal;font-weight:700;margin-left:auto}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.kv div{background:var(--panel2);border-radius:8px;padding:6px 10px}.kv span{display:block;color:var(--mute);font-size:12px}.kv b{font-size:18px}
+.bar{height:8px;background:var(--panel2);border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;width:0;transition:width .5s}
+.trend{margin-top:6px;font-weight:600}
+.toast{color:var(--ok);font-size:14px;margin-top:8px;min-height:1.2em}
+details{margin-top:14px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+summary{cursor:pointer;font-weight:700;color:var(--brass)}
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+@media(max-width:760px){.flow{grid-template-columns:1fr 1fr}}
+.flow div{background:var(--panel2);border-radius:10px;padding:10px;font-size:14px}
+.foot{color:var(--mute);font-size:13px;margin-top:12px;max-width:90ch}
+.pulse{animation:p 1.4s ease-in-out infinite}
+@keyframes p{0%,100%{opacity:.35}50%{opacity:.7}}
+#rt{stroke-dasharray:2 10;animation:m 1s linear infinite}
+@keyframes m{to{stroke-dashoffset:-12}}
+@media(prefers-reduced-motion:reduce){.pulse,#rt{animation:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="brand">
+    <div class="logo">Sangam Shield<small id="tag"></small></div>
+    <span class="pill" id="pill"><i></i><span id="pt"></span></span>
+    <span class="clk" id="clk"></span>
+  </div>
+  <div class="ctl">
+    <div class="seg" id="scen" role="group"><button data-s="normal"></button><button data-s="peak"></button><button data-s="surge"></button></div>
+    <div class="seg" id="lg" role="group"><button data-l="0">EN</button><button data-l="1">हिन्दी</button></div>
+  </div>
+</header>
+
+<div class="how"><span class="badge" id="badge"></span><span id="howT"></span></div>
+
+<div class="stats">
+  <div class="stat"><b id="s1"></b><span id="l1"></span></div>
+  <div class="stat"><b id="s2"></b><span id="l2"></span></div>
+  <div class="stat"><b id="s3"></b><span id="l3"></span></div>
+  <div class="stat"><b id="s4"></b><span id="l4"></span></div>
+</div>
+
+<div class="grid">
+  <div class="card">
+    <svg class="map" id="map" viewBox="0 0 800 520" role="img" aria-label="Live crowd density map"></svg>
+    <div class="legend" id="legend"></div>
+  </div>
+  <div class="card">
+    <div class="tabs" role="tablist" id="tabs">
+      <button role="tab" data-t="al"></button><button role="tab" data-t="zone"></button><button role="tab" data-t="rt"></button><button role="tab" data-t="sos"></button>
+    </div>
+    <div class="body">
+      <div id="p_al"><ul class="al" id="alist"></ul></div>
+      <div id="p_zone" hidden></div>
+      <div id="p_rt" hidden>
+        <label id="lFrom" for="from"></label><select id="from"></select>
+        <label id="lTo" for="to"></label><select id="to"></select>
+        <button class="btn full" id="goR"></button>
+        <div id="rOut"></div>
+      </div>
+      <div id="p_sos" hidden>
+        <label id="lAt" for="at"></label><select id="at"></select>
+        <button class="btn sos full" id="goS"></button>
+        <div id="sOut"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<details>
+  <summary id="hwT"></summary>
+  <div class="flow" id="flow"></div>
+</details>
+<p class="foot" id="foot"></p>
+</div>
+
+<script>
+const N=[
+{id:'gate',x:80,y:120,b:2.2,area:900,n:['Main Gate','मुख्य द्वार']},
+{id:'park',x:80,y:330,b:1.2,area:2500,n:['Parking','पार्किंग']},
+{id:'temple',x:260,y:150,b:3.0,area:700,n:['Temple Lane','मंदिर गली']},
+{id:'market',x:270,y:340,b:2.6,area:1100,n:['Market Chowk','बाज़ार चौक']},
+{id:'bridge',x:455,y:240,b:3.0,area:600,n:['Bridge','पुल']},
+{id:'akh',x:450,y:80,b:1.6,area:1200,n:['Akhada Camp','अखाड़ा शिविर']},
+{id:'ghatA',x:620,y:140,b:3.7,area:1500,n:['Ghat A','घाट A']},
+{id:'ghatB',x:630,y:340,b:3.0,area:1400,n:['Ghat B','घाट B']},
+{id:'med',x:450,y:430,b:0.7,area:400,n:['Medical Camp','चिकित्सा शिविर']}];
+const E=[['gate','temple'],['gate','park'],['park','market'],['temple','market'],['temple','bridge'],['market','bridge'],['temple','akh'],['akh','ghatA'],['bridge','ghatA'],['bridge','ghatB'],['market','med'],['med','ghatB'],['bridge','med'],['ghatA','ghatB']];
+const I={},adj={},D={},lvl={},M={},C={},hist={},ps={};
+N.forEach(n=>{I[n.id]=n;adj[n.id]=[];D[n.id]=n.b;lvl[n.id]=0;M[n.id]=0;C[n.id]=false;hist[n.id]=Array(10).fill(n.b);ps[n.id]=0});
+E.forEach(([a,b])=>{const d=Math.hypot(I[a].x-I[b].x,I[a].y-I[b].y);adj[a].push({to:b,d});adj[b].push({to:a,d})});
+
+const T=[{
+tag:'Kumbh Mela crowd command',sc:['Normal day','Shahi Snan peak','Surge at Bridge'],
+st:['People on site (density × area)','Danger zones','Calmest zone','Next risk'],none:'None expected',
+tb:['Alerts','Zone','Safe route','SOS'],status:['Normal','Caution','Critical'],
+lg:['Safe (under 2.5)','Busy (2.5 to 4)','Danger (4 and above)','people per m²'],
+badge:'Demo data',how:'<b>Try it:</b> 1) Tap <b>Surge at Bridge</b> and wait for the alert. 2) Press <b>Apply diversion</b> on the alert and watch Bridge fall. 3) Open <b>Safe route</b> from Main Gate to Ghat A. Data is simulated; real sensors connect in Phase 2.',
+noAl:'No alerts. All zones are safe.',
+bad:(n,d,a)=>`${n} is overcrowded (${d} people/m²). Close entry and divert pilgrims via ${a}.`,
+pred:(n,m)=>`${n} will reach danger in about ${m} min if the crowd keeps rising.`,
+act:(n,on)=>on?`Diversion started at ${n}. Pilgrims are being sent to nearby zones.`:`Diversion at ${n} ended.`,
+sosA:(n,m)=>`SOS from ${n}. Medical Camp is ${m} min away. Team dispatched (demo).`,
+apply:'Apply diversion',end:'End diversion',add:'Add crowd',rem:'Remove crowd',annB:'Copy announcement',copied:'Copied. Use it on loudspeakers or Cell Broadcast.',
+unit:'people/m²',k:['People now','Safe capacity'],div:'Diverted',
+tr:{up:m=>m?`Rising. Danger in about ${m} min.`:'Rising slowly.',flat:'Steady.',down:'Falling.'},
+annT:(n,a)=>`Attention pilgrims: ${n} is crowded. Please do not go there. Use the route via ${a}. Follow volunteer instructions.`,
+from:'From',to:'To',at:'I am at',goR:'Find safest route',goS:'Send SOS',
+route:(p,m)=>`<b>Safest route · ${m} min</b><br>${p}`,safe:'The shortest route is also safe right now.',
+avoid:(n,d)=>`The shortest route passes ${n} (${d} people/m²). It is avoided.`,
+sos:m=>`<b>Help is ${m} min away at the Medical Camp.</b><br>Control room notified (demo). Route shown on the map.`,
+tips:['Stay calm and keep your hands near your chest.','Move sideways out of the crowd flow, not against it.','Never stop in narrow lanes or on the bridge.'],
+hw:'How it works in real life',
+flow:['Volunteer counters and CCTV count people at gates, bridges and ghats.','Counts sync offline-first: weak mobile networks delay data, they never lose it.','This dashboard turns counts into density, predicts risk and shows safe routes.','Control room acts: loudspeakers, LED boards, Cell Broadcast, gate closure.'],
+foot:'Prototype with simulated data. The same system can run for Puri Rath Yatra and for cyclone shelters in Odisha.'
+},{
+tag:'कुंभ मेला भीड़ कमान',sc:['सामान्य दिन','शाही स्नान की भीड़','पुल पर उछाल'],
+st:['लोग (घनत्व × क्षेत्रफल)','खतरे वाले ज़ोन','सबसे शांत ज़ोन','अगला खतरा'],none:'कोई अनुमान नहीं',
+tb:['अलर्ट','ज़ोन','सुरक्षित रास्ता','SOS'],status:['सामान्य','सावधानी','गंभीर'],
+lg:['सुरक्षित (2.5 से कम)','भीड़ (2.5 से 4)','खतरा (4 या ज़्यादा)','लोग प्रति मी²'],
+badge:'डेमो डेटा',how:'<b>आज़माएँ:</b> 1) <b>पुल पर उछाल</b> दबाएँ और अलर्ट का इंतज़ार करें। 2) अलर्ट पर <b>भीड़ मोड़ें</b> दबाएँ और पुल की भीड़ घटती देखें। 3) मुख्य द्वार से घाट A का <b>सुरक्षित रास्ता</b> खोलें। डेटा सिम्युलेटेड है, असली सेंसर दूसरे चरण में जुड़ेंगे।',
+noAl:'कोई अलर्ट नहीं। सभी ज़ोन सुरक्षित हैं।',
+bad:(n,d,a)=>`${n} पर भीड़ बहुत ज़्यादा है (${d} लोग/मी²)। प्रवेश रोकें और श्रद्धालुओं को ${a} से भेजें।`,
+pred:(n,m)=>`भीड़ ऐसे ही बढ़ती रही तो ${n} लगभग ${m} मिनट में खतरे के स्तर पर पहुँच जाएगा।`,
+act:(n,on)=>on?`${n} पर भीड़ मोड़ना शुरू। श्रद्धालुओं को पास के ज़ोन में भेजा जा रहा है।`:`${n} पर भीड़ मोड़ना बंद।`,
+sosA:(n,m)=>`${n} से SOS। चिकित्सा शिविर ${m} मिनट दूर है। टीम रवाना (डेमो)।`,
+apply:'भीड़ मोड़ें',end:'मोड़ना बंद करें',add:'भीड़ बढ़ाएँ',rem:'भीड़ घटाएँ',annB:'घोषणा कॉपी करें',copied:'कॉपी हो गया। लाउडस्पीकर या सेल ब्रॉडकास्ट पर इस्तेमाल करें।',
+unit:'लोग/मी²',k:['अभी लोग','सुरक्षित क्षमता'],div:'मोड़ा गया',
+tr:{up:m=>m?`बढ़ रही है। लगभग ${m} मिनट में खतरा।`:'धीरे बढ़ रही है।',flat:'स्थिर।',down:'घट रही है।'},
+annT:(n,a)=>`श्रद्धालु ध्यान दें: ${n} पर भीड़ ज़्यादा है। कृपया वहाँ न जाएँ। ${a} वाला रास्ता लें। स्वयंसेवकों की बात मानें।`,
+from:'कहाँ से',to:'कहाँ तक',at:'मैं यहाँ हूँ',goR:'सबसे सुरक्षित रास्ता खोजें',goS:'SOS भेजें',
+route:(p,m)=>`<b>सबसे सुरक्षित रास्ता · ${m} मिनट</b><br>${p}`,safe:'सबसे छोटा रास्ता भी अभी सुरक्षित है।',
+avoid:(n,d)=>`सबसे छोटा रास्ता ${n} से गुज़रता है (${d} लोग/मी²)। उसे छोड़ दिया गया है।`,
+sos:m=>`<b>चिकित्सा शिविर से मदद ${m} मिनट दूर है।</b><br>कंट्रोल रूम को सूचना दे दी गई (डेमो)। रास्ता नक्शे पर दिख रहा है।`,
+tips:['शांत रहें और हाथ सीने के पास रखें।','भीड़ के बहाव के साथ किनारे की ओर निकलें, उसके खिलाफ नहीं।','संकरी गली या पुल पर कभी न रुकें।'],
+hw:'असल में यह कैसे काम करेगा',
+flow:['स्वयंसेवक काउंटर और CCTV गेट, पुल और घाटों पर लोग गिनते हैं।','गिनती ऑफ़लाइन-फ़र्स्ट सिंक होती है: कमज़ोर नेटवर्क में डेटा देर से आएगा, खोएगा नहीं।','यह डैशबोर्ड गिनती को घनत्व में बदलता है, खतरे का अनुमान और सुरक्षित रास्ते दिखाता है।','कंट्रोल रूम कदम उठाता है: लाउडस्पीकर, LED बोर्ड, सेल ब्रॉडकास्ट, गेट बंद।'],
+foot:'यह सिम्युलेटेड डेटा वाला प्रोटोटाइप है। यही सिस्टम पुरी रथ यात्रा और ओडिशा के चक्रवात आश्रयों के लिए भी चल सकता है।'
+}];
+let L=0,scen='peak',sel='bridge',R=null,alerts=[],dirty=true,tab='al';
+const $=id=>document.getElementById(id);
+const nm=id=>I[id].n[L];
+const col=d=>d>=4?'#FF4D5E':d>=2.5?'#FFB020':'#3DDC97';
+const lv=d=>d>=4?2:d>=2.5?1:0;
+const fmt=x=>Math.round(x).toLocaleString('en-IN');
+function slope(id){const h=hist[id].slice(-10),m=h.reduce((a,b)=>a+b,0)/10;let s=0;h.forEach((y,i)=>s+=(i-4.5)*(y-m));return s/82.5}
+function altOf(id){return adj[id].filter(e=>e.to!=='med').sort((a,b)=>D[a.to]-D[b.to])[0].to}
+function copy(txt,el){
+  const done=()=>{el.textContent=T[L].copied};
+  const fb=()=>{const t=document.createElement('textarea');t.value=txt;document.body.appendChild(t);t.select();try{document.execCommand('copy');done()}catch(e){}t.remove()};
+  try{navigator.clipboard.writeText(txt).then(done,fb)}catch(e){fb()}
+}
+
+function route(a,b,smart){
+  const dist={},prev={},todo=new Set(N.map(n=>n.id));
+  N.forEach(n=>dist[n.id]=1e9);dist[a]=0;
+  while(todo.size){
+    let u=null;for(const v of todo)if(u===null||dist[v]<dist[u])u=v;
+    todo.delete(u);if(dist[u]>=1e9||u===b)break;
+    for(const e of adj[u]){
+      if(!todo.has(e.to))continue;let w=e.d;
+      if(smart){const dd=(D[u]+D[e.to])/2;w*=1+Math.pow(Math.max(0,dd-2),2)*.7;if(D[e.to]>=5&&e.to!==b)w+=2000}
+      if(dist[u]+w<dist[e.to]){dist[e.to]=dist[u]+w;prev[e.to]=u}
+    }
+  }
+  if(dist[b]>=1e9)return null;
+  const p=[b];while(p[0]!==a)p.unshift(prev[p[0]]);return p;
+}
+function eta(p){
+  let s=0;
+  for(let i=0;i<p.length-1;i++){
+    const a=I[p[i]],b=I[p[i+1]],m=Math.hypot(a.x-b.x,a.y-b.y)*1.6,avg=(D[p[i]]+D[p[i+1]])/2;
+    s+=m/(1.2*(1-Math.min(.7,Math.max(0,avg-2)*.18)));
+  }
+  return Math.max(1,Math.round(s/60));
+}
+
+function build(){
+  let h='<defs><filter id="bl" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="11"/></filter><linearGradient id="rv" x1="0" x2="1"><stop offset="0" stop-color="#12394C"/><stop offset="1" stop-color="#0A2230"/></linearGradient><pattern id="gr" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#12222A" stroke-width="1"/></pattern></defs><rect width="800" height="520" fill="url(#gr)"/>';
+  [[150,215,80,65],[330,165,70,60],[130,410,120,60],[560,420,90,60],[540,200,70,50],[330,400,70,60]].forEach(r=>h+=`<rect x="${r[0]}" y="${r[1]}" width="${r[2]}" height="${r[3]}" rx="6" fill="#0F1C21"/>`);
+  h+='<path d="M728 0C700 120 770 200 730 300S705 460 745 520L800 520L800 0Z" fill="url(#rv)"/><path d="M752 20C735 110 788 190 756 290S742 440 770 510" fill="none" stroke="#2E6A86" stroke-width="1.5" opacity=".5"/><text x="774" y="262" fill="#4C8AA6" font-size="13" transform="rotate(90 774 262)" text-anchor="middle">Godavari</text>';
+  [140,340].forEach(y=>[-12,0,12].forEach(o=>h+=`<line x1="700" x2="${726+(y>200?4:0)}" y1="${y+o}" y2="${y+o}" stroke="#4A6874" stroke-width="2"/>`));
+  E.forEach(([a,b])=>h+=`<line x1="${I[a].x}" y1="${I[a].y}" x2="${I[b].x}" y2="${I[b].y}" stroke="#18282F" stroke-width="9" stroke-linecap="round"/><line x1="${I[a].x}" y1="${I[a].y}" x2="${I[b].x}" y2="${I[b].y}" stroke="#2D454E" stroke-width="1.5" stroke-dasharray="6 7"/>`);
+  h+='<polyline id="rt" fill="none" stroke="#E0B35A" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" points=""/>';
+  N.forEach(n=>h+=`<circle id="h_${n.id}" cx="${n.x}" cy="${n.y}" r="30" filter="url(#bl)" opacity=".55" pointer-events="none"/>`);
+  h+='<circle id="sel" r="25" fill="none" stroke="#E0B35A" stroke-width="2" stroke-dasharray="4 4" pointer-events="none"/>';
+  N.forEach(n=>h+=`<g class="z" id="z_${n.id}" tabindex="0" role="button"><circle cx="${n.x}" cy="${n.y}" r="28" fill="transparent"/><circle id="c_${n.id}" cx="${n.x}" cy="${n.y}" r="16" fill="#0B1418" stroke-width="3"/><text id="t_${n.id}" class="dn" x="${n.x}" y="${n.y+4}"></text></g><text id="n_${n.id}" class="nm" x="${n.x}" y="${n.y+36}"></text><text id="d_${n.id}" class="dv" x="${n.x}" y="${n.y-24}"></text>`);
+  h+='<g transform="translate(36 44)"><circle r="15" fill="none" stroke="#2D454E"/><path d="M0-11L5 5L0 2L-5 5Z" fill="#8FA5AD"/><text y="-19" class="dn" style="fill:#8FA5AD">N</text></g><g transform="translate(30 492)"><line x2="80" stroke="#8FA5AD" stroke-width="2"/><line y1="-4" y2="4" stroke="#8FA5AD" stroke-width="2"/><line x1="80" x2="80" y1="-4" y2="4" stroke="#8FA5AD" stroke-width="2"/><text x="40" y="-8" class="dn" style="fill:#8FA5AD">100 m</text></g>';
+  $('map').innerHTML=h;
+  N.forEach(n=>{const g=$('z_'+n.id);g.onclick=()=>pick(n.id);g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick(n.id)}}});
+}
+function pick(id){sel=id;buildZone();showTab('zone');paint();updZone()}
+
+function paint(){
+  let sum=0,red=0,amb=0,ppl=0,calm=null,nx=null;
+  N.forEach(n=>{
+    const d=D[n.id],c=col(d);sum+=d;ppl+=d*n.area;
+    if(d>=4)red++;else if(d>=2.5)amb++;
+    if(n.id!=='med'&&(!calm||d<D[calm]))calm=n.id;
+    const sl=slope(n.id);
+    if(d<4&&sl>.03){const m=(4-d)/(sl*2);if(!nx||m<nx.m)nx={id:n.id,m}}
+    const h=$('h_'+n.id);h.setAttribute('r',20+d*10);h.setAttribute('fill',c);h.setAttribute('class',d>=4?'pulse':'');
+    $('c_'+n.id).setAttribute('stroke',c);$('t_'+n.id).textContent=d.toFixed(1);
+    $('d_'+n.id).textContent=C[n.id]?T[L].div:'';
+  });
+  const s=I[sel];$('sel').setAttribute('cx',s.x);$('sel').setAttribute('cy',s.y);
+  $('s1').textContent=fmt(ppl);$('s2').textContent=red;$('s2').style.color=red?'var(--bad)':'var(--ok)';
+  $('s3').textContent=nm(calm);
+  $('s4').textContent=nx&&nx.m<=30?`${nm(nx.id)} · ~${Math.max(1,Math.round(nx.m))} min`:T[L].none;
+  const st=red?2:amb>=3?1:0;
+  $('pt').textContent=T[L].status[st];$('pill').firstChild.style.background=['var(--ok)','var(--warn)','var(--bad)'][st];
+}
+
+function buildZone(){
+  const T0=T[L],n=I[sel];
+  $('p_zone').innerHTML=`<h3 class="zh">${nm(sel)}</h3>
+  <div class="zbig"><b id="zd"></b><span>${T0.unit}</span><em id="zs"></em></div>
+  <div class="kv"><div><span>${T0.k[0]}</span><b id="zp"></b></div><div><span>${T0.k[1]}</span><b>${fmt(n.area*4)}</b></div></div>
+  <div class="bar"><i id="zb"></i></div>
+  <svg viewBox="0 0 280 64" width="100%" style="margin-top:10px" aria-hidden="true"><line x1="0" x2="280" y1="24.6" y2="24.6" stroke="#FF4D5E" stroke-dasharray="3 4" opacity=".5"/><line x1="0" x2="280" y1="39.4" y2="39.4" stroke="#FFB020" stroke-dasharray="3 4" opacity=".5"/><polyline id="spl" fill="none" stroke="#E0B35A" stroke-width="2" points=""/></svg>
+  <div class="trend" id="zt"></div>
+  <div class="two"><button class="btn" data-a="div" id="bDiv"></button><button class="btn alt" data-a="ann">${T0.annB}</button><button class="btn alt" data-a="add">${T0.add}</button><button class="btn alt" data-a="rem">${T0.rem}</button></div>
+  <div class="toast" id="zToast"></div>`;
+}
+function updZone(){
+  if(!$('zd'))return;
+  const T0=T[L],d=D[sel],n=I[sel],c=col(d),sl=slope(sel);
+  $('zd').textContent=d.toFixed(1);$('zd').style.color=c;
+  $('zs').textContent=T0.status[lv(d)===2?2:lv(d)===1?1:0];$('zs').style.color=c;
+  $('zp').textContent=fmt(d*n.area);
+  $('zb').style.width=Math.min(100,d/4*100)+'%';$('zb').style.background=c;
+  $('spl').setAttribute('points',hist[sel].map((v,i)=>(i*280/39).toFixed(1)+','+(64-v/6.5*64).toFixed(1)).join(' '));
+  $('zt').textContent=sl>.03?T0.tr.up(d<4?Math.max(1,Math.round((4-d)/(sl*2))):0):sl<-.03?T0.tr.down:T0.tr.flat;
+  $('bDiv').textContent=C[sel]?T0.end:T0.apply;
+}
+
+function renderAlerts(){
+  const T0=T[L];dirty=false;
+  $('alist').innerHTML=alerts.length?alerts.map(a=>{
+    const tm=a.t.toLocaleTimeString('en-IN',{hour12:false}),n=nm(a.n);
+    const btn=!C[a.n]?`<br><button class="btn" data-z="${a.n}">${T0.apply}</button>`:'';
+    if(a.k==='bad')return`<li><span class="tm">${tm}</span><span class="bad">${n}</span><br>${T0.bad(n,a.d,nm(a.a))}${btn}</li>`;
+    if(a.k==='pred')return`<li><span class="tm">${tm}</span><span class="pred">${n}</span><br>${T0.pred(n,a.m)}${btn}</li>`;
+    if(a.k==='act')return`<li><span class="tm">${tm}</span><span class="act">${n}</span><br>${T0.act(n,a.on)}</li>`;
+    return`<li><span class="tm">${tm}</span><span class="sos">SOS</span><br>${T0.sosA(n,a.m)}</li>`;
+  }).join(''):`<li class="empty">${T0.noAl}</li>`;
+}
+function drawRoute(){
+  if(!R){$('rt').setAttribute('points','');return}
+  const p=route(R.a,R.b,true);if(!p)return;
+  $('rt').setAttribute('points',p.map(id=>I[id].x+','+I[id].y).join(' '));
+  const T0=T[L],m=eta(p),q=route(R.a,R.b,false),bad=q.find(id=>D[id]>=4&&id!==R.a&&id!==R.b);
+  if(R.sos){$('sOut').innerHTML=`<div class="out bad">${T0.sos(m)}<ul>${T0.tips.map(x=>`<li>${x}</li>`).join('')}</ul></div>`;return}
+  $('rOut').innerHTML=`<div class="out">${T0.route(p.map(nm).join(' → '),m)}<br><span class="empty">${bad?T0.avoid(nm(bad),D[bad].toFixed(1)):T0.safe}</span></div>`;
+}
+
+function tick(){
+  const mult=scen==='normal'?.75:1.2,now=new Date();
+  N.forEach(n=>{
+    const id=n.id;
+    let tg=n.b*mult+M[id]+(scen==='surge'&&id==='bridge'?2.8:0)-(C[id]?3.0:0);
+    adj[id].forEach(e=>{if(C[e.to])tg+=.2});
+    D[id]=Math.min(6.5,Math.max(.2,D[id]+(tg-D[id])*.25+(Math.random()-.5)*.25));
+    hist[id].push(D[id]);if(hist[id].length>40)hist[id].shift();
+    const l=lv(D[id]),sl=slope(id);
+    if(l===2&&lvl[id]!==2){alerts.unshift({k:'bad',t:now,n:id,d:D[id].toFixed(1),a:altOf(id)});dirty=true}
+    if(l<2&&sl>.03&&!ps[id]){const m=Math.round((4-D[id])/(sl*2));if(m>=1&&m<=10){ps[id]=1;alerts.unshift({k:'pred',t:now,n:id,m});dirty=true}}
+    if(l!==1)ps[id]=0;
+    lvl[id]=l;
+  });
+  alerts=alerts.slice(0,10);
+  paint();updZone();if(dirty)renderAlerts();drawRoute();
+}
+
+function showTab(t){
+  tab=t;
+  document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===t));
+  ['al','zone','rt','sos'].forEach(x=>$('p_'+x).hidden=x!==t);
+  if(t==='al'||t==='zone'){R=null;drawRoute()}
+}
+function fillSel(){
+  ['from','to','at'].forEach(id=>{
+    const s=$(id),v=s.value;
+    s.innerHTML=N.filter(n=>id!=='at'||n.id!=='med').map(n=>`<option value="${n.id}">${n.n[L]}</option>`).join('');
+    s.value=v||(id==='from'?'gate':id==='to'?'ghatA':'bridge');
+  });
+}
+function ui(){
+  const T0=T[L];document.documentElement.lang=L?'hi':'en';
+  $('tag').textContent=T0.tag;$('badge').textContent=T0.badge;$('howT').innerHTML=T0.how;
+  document.querySelectorAll('#scen button').forEach((b,i)=>{b.textContent=T0.sc[i];b.setAttribute('aria-pressed',b.dataset.s===scen)});
+  document.querySelectorAll('#lg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l==L));
+  ['l1','l2','l3','l4'].forEach((id,i)=>$(id).textContent=T0.st[i]);
+  $('legend').innerHTML=`<span><i style="background:#3DDC97"></i>${T0.lg[0]}</span><span><i style="background:#FFB020"></i>${T0.lg[1]}</span><span><i style="background:#FF4D5E"></i>${T0.lg[2]}</span><span>${T0.lg[3]}</span>`;
+  document.querySelectorAll('#tabs button').forEach((b,i)=>b.textContent=T0.tb[i]);
+  $('lFrom').textContent=T0.from;$('lTo').textContent=T0.to;$('lAt').textContent=T0.at;
+  $('goR').textContent=T0.goR;$('goS').textContent=T0.goS;$('foot').textContent=T0.foot;
+  $('hwT').textContent=T0.hw;$('flow').innerHTML=T0.flow.map(x=>`<div>${x}</div>`).join('');
+  N.forEach(n=>$('n_'+n.id).textContent=n.n[L]);
+  fillSel();buildZone();renderAlerts();paint();updZone();drawRoute();
+}
+
+document.querySelectorAll('#scen button').forEach(b=>b.onclick=()=>{scen=b.dataset.s;ui();tick()});
+document.querySelectorAll('#lg button').forEach(b=>b.onclick=()=>{L=+b.dataset.l;ui()});
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>showTab(b.dataset.t));
+$('goR').onclick=()=>{R={a:$('from').value,b:$('to').value};$('sOut').innerHTML='';drawRoute()};
+$('goS').onclick=()=>{
+  const a=$('at').value,p=route(a,'med',true);R={a,b:'med',sos:true};
+  alerts.unshift({k:'sos',t:new Date(),n:a,m:eta(p)});dirty=true;renderAlerts();drawRoute();
+};
+$('alist').onclick=e=>{
+  const z=e.target.dataset.z;if(!z)return;
+  C[z]=true;alerts.unshift({k:'act',t:new Date(),n:z,on:true});dirty=true;tick();
+};
+$('p_zone').onclick=e=>{
+  const a=e.target.dataset.a;if(!a)return;
+  if(a==='div'){C[sel]=!C[sel];alerts.unshift({k:'act',t:new Date(),n:sel,on:C[sel]});dirty=true}
+  if(a==='add')M[sel]=Math.min(3,M[sel]+1);
+  if(a==='rem')M[sel]=Math.max(0,M[sel]-1);
+  if(a==='ann')copy(T[L].annT(nm(sel),nm(altOf(sel))),$('zToast'));
+  if(a!=='ann')tick();
+};
+build();ui();tick();
+setInterval(tick,1500);
+setInterval(()=>{$('clk').textContent=new Date().toLocaleTimeString('en-IN',{hour12:false})},1000);
+$('clk').textContent=new Date().toLocaleTimeString('en-IN',{hour12:false});
+</script>
+</body>
+</html>

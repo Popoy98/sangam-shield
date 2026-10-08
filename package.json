@@ -1,0 +1,13 @@
+{
+  "name": "sangam-shield",
+  "version": "1.0.0",
+  "description": "Crowd command dashboard for Kumbh Mela and mass gatherings (Hack for Social Cause prototype)",
+  "scripts": {
+    "test": "node tests/smoke.test.js",
+    "start": "npx serve ."
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "jsdom": "^30.1.2"
+  }
+}
